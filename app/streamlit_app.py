@@ -214,7 +214,7 @@ st.html(f"""
         0% {{ transform: translateY(-45px) rotate(16deg); opacity: 0; }}
         15% {{ opacity: 0.85; }}
         85% {{ opacity: 0.85; }}
-        100% {{ transform: translateY(460px) rotate(16deg); opacity: 0; }}
+        100% {{ transform: translateY(540px) rotate(16deg); opacity: 0; }}
     }}
 
     .rain-splash {{
@@ -239,7 +239,7 @@ st.html(f"""
         bottom: 0;
         left: 0;
         right: 0;
-        height: 250px;
+        height: 280px;
         background: url("data:image/png;base64,{bg_b64}") no-repeat bottom center;
         background-size: cover;
         pointer-events: none;
@@ -646,12 +646,12 @@ hero_component_html = f"""<!DOCTYPE html>
         border: 1px solid rgba(255, 255, 255, 0.12);
         box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.85);
         border-radius: 28px;
-        padding: 26px 32px 22px 32px;
+        padding: 22px 30px 18px 30px;
         position: relative;
         overflow: hidden;
         backdrop-filter: blur(16px);
         width: 100%;
-        min-height: 420px;
+        min-height: 480px;
     }}
     .rain-container {{
         position: absolute;
@@ -672,7 +672,7 @@ hero_component_html = f"""<!DOCTYPE html>
         0% {{ transform: translateY(-45px) rotate(16deg); opacity: 0; }}
         15% {{ opacity: 0.85; }}
         85% {{ opacity: 0.85; }}
-        100% {{ transform: translateY(460px) rotate(16deg); opacity: 0; }}
+        100% {{ transform: translateY(540px) rotate(16deg); opacity: 0; }}
     }}
     .rain-splash {{
         position: absolute;
@@ -694,7 +694,7 @@ hero_component_html = f"""<!DOCTYPE html>
         bottom: 0;
         left: 0;
         right: 0;
-        height: 250px;
+        height: 280px;
         background: url("data:image/png;base64,{bg_b64}") no-repeat bottom center;
         background-size: cover;
         pointer-events: none;
@@ -857,7 +857,7 @@ hero_component_html = f"""<!DOCTYPE html>
                 </div>
 
                 <!-- Interactive Custom Simulation Drawer -->
-                <div id="custom-slider-container" style="display: none; margin-top: 14px; margin-bottom: 12px; background: rgba(15, 23, 42, 0.92); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 14px; padding: 12px 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); backdrop-filter: blur(12px);">
+                <div id="custom-slider-container" style="display: none; margin-top: 10px; margin-bottom: 10px; background: rgba(15, 23, 42, 0.92); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 14px; padding: 10px 14px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); backdrop-filter: blur(12px);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <span style="font-size: 0.9rem;">🎚️</span>
@@ -1203,7 +1203,7 @@ hero_component_html = f"""<!DOCTYPE html>
 </body>
 </html>"""
 
-components.html(hero_component_html, height=450, scrolling=False)
+components.html(hero_component_html, height=540, scrolling=False)
 
 # 4. Major Air Pollutants Section (2x3 Grid matching Image 1)
 # -----------------------------------------------------------------------------
