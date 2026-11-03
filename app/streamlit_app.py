@@ -1,6 +1,7 @@
 import base64
 from pathlib import Path
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
@@ -623,7 +624,170 @@ st.html("""
 # -----------------------------------------------------------------------------
 needle_pct = min(100.0, max(0.0, (113.0 / 500.0) * 100.0))
 
-st.html(f"""
+hero_component_html = f"""<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    * {{
+        box-sizing: border-box;
+    }}
+    body {{
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        color: #FFFFFF;
+        overflow: hidden;
+    }}
+    .aqi-hero-card {{
+        background: #131926;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.85);
+        border-radius: 28px;
+        padding: 26px 32px 22px 32px;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(16px);
+        width: 100%;
+        min-height: 420px;
+    }}
+    .rain-container {{
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 2;
+    }}
+    .raindrop {{
+        position: absolute;
+        top: -45px;
+        width: 1.5px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(186, 230, 253, 0.55) 70%, rgba(255, 255, 255, 0.9) 100%);
+        transform: rotate(16deg);
+        animation: rain-fall linear infinite;
+    }}
+    @keyframes rain-fall {{
+        0% {{ transform: translateY(-45px) rotate(16deg); opacity: 0; }}
+        15% {{ opacity: 0.85; }}
+        85% {{ opacity: 0.85; }}
+        100% {{ transform: translateY(460px) rotate(16deg); opacity: 0; }}
+    }}
+    .rain-splash {{
+        position: absolute;
+        bottom: 6px;
+        width: 12px;
+        height: 3px;
+        border: 1px solid rgba(186, 230, 253, 0.6);
+        border-radius: 50%;
+        transform: scale(0);
+        animation: splash-ripple 1.3s infinite ease-out;
+    }}
+    @keyframes splash-ripple {{
+        0% {{ transform: scale(0); opacity: 0; }}
+        40% {{ opacity: 0.8; }}
+        100% {{ transform: scale(1.6); opacity: 0; }}
+    }}
+    .hero-skyline-bg {{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 250px;
+        background: url("data:image/png;base64,{bg_b64}") no-repeat bottom center;
+        background-size: cover;
+        pointer-events: none;
+        z-index: 1;
+        mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(0,0,0,0.85) 65%, rgba(0,0,0,0.2) 85%, rgba(0,0,0,0) 100%);
+        -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(0,0,0,0.85) 65%, rgba(0,0,0,0.2) 85%, rgba(0,0,0,0) 100%);
+    }}
+    .mascot-wrapper {{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        position: relative;
+        z-index: 3;
+        padding-bottom: 2px;
+        min-width: 190px;
+        height: 195px;
+    }}
+    .mascot-img {{
+        height: 175px;
+        width: auto;
+        max-width: 180px;
+        object-fit: contain;
+        filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.7));
+        transition: transform 0.3s ease, opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform, opacity;
+        position: relative;
+        z-index: 2;
+    }}
+    .mascot-img:hover {{
+        transform: translateY(-4px) scale(1.03);
+    }}
+    .smoke-canvas {{
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        pointer-events: none;
+        z-index: 5;
+    }}
+    .mascot-shadow {{
+        width: 85px;
+        height: 10px;
+        background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0) 70%);
+        border-radius: 50%;
+        margin-top: -6px;
+    }}
+    .pulse-dot {{
+        width: 10px;
+        height: 10px;
+        background-color: #EF4444;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 12px #EF4444;
+        animation: pulse-ring 2s infinite;
+    }}
+    @keyframes pulse-ring {{
+        0% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }}
+        70% {{ transform: scale(1.05); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }}
+        100% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }}
+    }}
+    .category-badge {{
+        font-size: 1.12rem;
+        font-weight: 700;
+        padding: 6px 18px;
+        border-radius: 12px;
+        background: rgba(180, 131, 22, 0.35);
+        color: #FDE047;
+        border: 1px solid rgba(250, 204, 21, 0.55);
+        display: inline-block;
+    }}
+    .weather-box {{
+        background: rgba(22, 28, 44, 0.76);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        padding: 18px 22px;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+    }}
+    .spectrum-bar {{
+        height: 9px;
+        border-radius: 5px;
+        background: linear-gradient(90deg, #10B981 0%, #84CC16 20%, #F59E0B 40%, #F97316 60%, #EC4899 80%, #DC2626 100%);
+        position: relative;
+        margin-top: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }}
+    button:focus {{
+        outline: none;
+    }}
+</style>
+</head>
+<body>
 <div class="aqi-hero-card">
     <div class="rain-container">
         {rain_drops_html}
@@ -631,7 +795,7 @@ st.html(f"""
     </div>
     <div class="hero-skyline-bg"></div>
     
-    <!-- Top Bar inside Card: Tabs, Title, Locate Buttons -->
+    <!-- Top Bar inside Card: Tabs, Title, Custom AQI Button -->
     <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px; position: relative; z-index: 3; margin-bottom: 18px;">
         <div>
             <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
@@ -654,7 +818,7 @@ st.html(f"""
         </div>
         
         <div style="display: flex; align-items: center; gap: 10px;">
-            <button id="custom-toggle-btn" onclick="window.toggleCustomSlider()" style="background: rgba(56, 139, 253, 0.14); border: 1px solid rgba(56, 189, 248, 0.5); color: #38BDF8; padding: 7px 16px; border-radius: 999px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; box-shadow: 0 0 14px rgba(56, 189, 248, 0.2); transition: all 0.25s ease;">
+            <button id="custom-toggle-btn" onclick="toggleCustomSlider()" style="background: rgba(56, 139, 253, 0.14); border: 1px solid rgba(56, 189, 248, 0.5); color: #38BDF8; padding: 7px 16px; border-radius: 999px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; box-shadow: 0 0 14px rgba(56, 189, 248, 0.2); transition: all 0.25s ease;">
                 <span>⚙️</span>
                 <span id="custom-btn-label">Custom AQI</span>
             </button>
@@ -701,11 +865,11 @@ st.html(f"""
                         </div>
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <span id="slider-val-badge" style="background: rgba(250, 204, 21, 0.2); color: #FACC15; font-size: 0.82rem; font-weight: 800; padding: 2px 10px; border-radius: 6px; border: 1px solid rgba(250, 204, 21, 0.4);">113 AQI</span>
-                            <button onclick="window.resetAqi()" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); color: #CBD5E1; font-size: 0.74rem; font-weight: 600; padding: 3px 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">↺ Reset</button>
+                            <button onclick="resetAqi()" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); color: #CBD5E1; font-size: 0.74rem; font-weight: 600; padding: 3px 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">↺ Reset</button>
                         </div>
                     </div>
                     <input type="range" id="aqi-sim-slider" min="10" max="480" value="113" step="1"
-                        oninput="window.onAqiSliderChange(this.value)"
+                        oninput="onAqiSliderChange(this.value)"
                         style="width: 100%; height: 7px; border-radius: 5px; accent-color: #38BDF8; cursor: pointer; outline: none; margin: 4px 0 6px 0;">
                     <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #94A3B8;">
                         <span>10 (Pristine)</span>
@@ -719,16 +883,16 @@ st.html(f"""
                 </div>
 
                 <!-- CPCB Spectrum Bar (Interactive) -->
-                <div class="spectrum-bar" id="spectrum-bar-track" style="cursor: pointer; position: relative;" onclick="window.onSpectrumClick(event)" title="Click anywhere along the spectrum to jump to that AQI">
+                <div class="spectrum-bar" id="spectrum-bar-track" style="cursor: pointer; position: relative;" onclick="onSpectrumClick(event)" title="Click anywhere along the spectrum to jump to that AQI">
                     <div id="hero-spectrum-thumb" style="position: absolute; left: clamp(4%, {needle_pct}%, 96%); top: -6px; transform: translateX(-50%); width: 14px; height: 21px; background: #FFFFFF; border-radius: 4px; box-shadow: 0 0 12px rgba(0,0,0,0.9); border: 2.5px solid #F59E0B; transition: left 0.1s ease-out, border-color 0.2s ease;"></div>
                 </div>
                 <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: #E2E8F0; margin-top: 6px; font-weight: 600;">
-                    <span style="cursor: pointer;" onclick="window.setCustomAqi(35)">0 Good</span>
-                    <span style="cursor: pointer;" onclick="window.setCustomAqi(80)">50 Satisfactory</span>
-                    <span style="cursor: pointer;" onclick="window.setCustomAqi(150)">100 Moderate</span>
-                    <span style="cursor: pointer;" onclick="window.setCustomAqi(250)">200 Poor</span>
-                    <span style="cursor: pointer;" onclick="window.setCustomAqi(350)">300 V.Poor</span>
-                    <span style="cursor: pointer;" onclick="window.setCustomAqi(450)">400+ Severe</span>
+                    <span style="cursor: pointer;" onclick="setCustomAqi(35)">0 Good</span>
+                    <span style="cursor: pointer;" onclick="setCustomAqi(80)">50 Satisfactory</span>
+                    <span style="cursor: pointer;" onclick="setCustomAqi(150)">100 Moderate</span>
+                    <span style="cursor: pointer;" onclick="setCustomAqi(250)">200 Poor</span>
+                    <span style="cursor: pointer;" onclick="setCustomAqi(350)">300 V.Poor</span>
+                    <span style="cursor: pointer;" onclick="setCustomAqi(450)">400+ Severe</span>
                 </div>
             </div>
         </div>
@@ -770,50 +934,46 @@ st.html(f"""
 
     </div>
 </div>
-""")
 
-# Custom AQI Interactive Simulator & Smoke Burst Transition Script
-custom_aqi_script_html = """
 <script>
-(function() {
-    window.AVATAR_MAP = {
-        'good': 'data:image/png;base64,__B64_GOOD__',
-        'moderate': 'data:image/png;base64,__B64_MODERATE__',
-        'poor': 'data:image/png;base64,__B64_POOR__',
-        'very_poor': 'data:image/png;base64,__B64_VERY_POOR__',
-        'severe': 'data:image/png;base64,__B64_SEVERE__'
-    };
+    var AVATAR_MAP = {{
+        'good': 'data:image/png;base64,' + '{avatar_good_b64}',
+        'moderate': 'data:image/png;base64,' + '{avatar_moderate_b64}',
+        'poor': 'data:image/png;base64,' + '{avatar_poor_b64}',
+        'very_poor': 'data:image/png;base64,' + '{avatar_very_poor_b64}',
+        'severe': 'data:image/png;base64,' + '{avatar_severe_b64}'
+    }};
 
-    window.currentAvatarGroup = 'moderate';
-    window.isCustomSliderOpen = false;
+    var currentAvatarGroup = 'moderate';
+    var isCustomSliderOpen = false;
 
-    window.toggleCustomSlider = function() {
+    function toggleCustomSlider() {{
         var panel = document.getElementById('custom-slider-container');
         var btn = document.getElementById('custom-toggle-btn');
         var label = document.getElementById('custom-btn-label');
         if (!panel) return;
         
-        window.isCustomSliderOpen = !window.isCustomSliderOpen;
-        if (window.isCustomSliderOpen) {
+        isCustomSliderOpen = !isCustomSliderOpen;
+        if (isCustomSliderOpen) {{
             panel.style.display = 'block';
-            if (btn) {
+            if (btn) {{
                 btn.style.background = 'rgba(56, 189, 248, 0.28)';
                 btn.style.borderColor = '#38BDF8';
                 btn.style.boxShadow = '0 0 16px rgba(56, 189, 248, 0.45)';
-            }
+            }}
             if (label) label.innerText = 'Close Custom';
-        } else {
+        }} else {{
             panel.style.display = 'none';
-            if (btn) {
+            if (btn) {{
                 btn.style.background = 'rgba(56, 139, 253, 0.14)';
                 btn.style.borderColor = 'rgba(56, 189, 248, 0.5)';
                 btn.style.boxShadow = '0 0 14px rgba(56, 189, 248, 0.2)';
-            }
+            }}
             if (label) label.innerText = 'Custom AQI';
-        }
-    };
+        }}
+    }}
 
-    window.onAqiSliderChange = function(rawVal) {
+    function onAqiSliderChange(rawVal) {{
         var val = parseInt(rawVal, 10);
         if (isNaN(val)) return;
 
@@ -830,62 +990,62 @@ custom_aqi_script_html = """
         var group = 'moderate';
         var prominent = 'PM10';
 
-        if (val <= 50) {
+        if (val <= 50) {{
             catName = 'Good';
             catColor = '#34D399';
             catBg = 'rgba(16, 185, 129, 0.25)';
             catBorder = 'rgba(16, 185, 129, 0.45)';
             group = 'good';
             prominent = 'PM2.5';
-        } else if (val <= 100) {
+        }} else if (val <= 100) {{
             catName = 'Satisfactory';
             catColor = '#A3E635';
             catBg = 'rgba(132, 204, 22, 0.25)';
             catBorder = 'rgba(132, 204, 22, 0.45)';
             group = 'moderate';
             prominent = 'PM10';
-        } else if (val <= 200) {
+        }} else if (val <= 200) {{
             catName = 'Moderate';
             catColor = '#FACC15';
             catBg = 'rgba(250, 204, 21, 0.25)';
             catBorder = 'rgba(250, 204, 21, 0.45)';
             group = 'moderate';
             prominent = 'PM10';
-        } else if (val <= 300) {
+        }} else if (val <= 300) {{
             catName = 'Poor';
             catColor = '#FB923C';
             catBg = 'rgba(249, 115, 22, 0.25)';
             catBorder = 'rgba(249, 115, 22, 0.45)';
             group = 'poor';
             prominent = 'PM10';
-        } else if (val <= 400) {
+        }} else if (val <= 400) {{
             catName = 'Very Poor';
             catColor = '#F87171';
             catBg = 'rgba(239, 68, 68, 0.25)';
             catBorder = 'rgba(239, 68, 68, 0.45)';
             group = 'very_poor';
             prominent = 'PM10';
-        } else {
+        }} else {{
             catName = 'Severe';
             catColor = '#EF4444';
             catBg = 'rgba(153, 27, 27, 0.4)';
             catBorder = 'rgba(239, 68, 68, 0.65)';
             group = 'severe';
             prominent = 'PM10';
-        }
+        }}
 
-        if (numEl) {
+        if (numEl) {{
             numEl.style.color = catColor;
             numEl.style.textShadow = '0 4px 18px ' + catColor + '55';
-        }
+        }}
 
         var catBadge = document.getElementById('hero-cat-badge');
-        if (catBadge) {
+        if (catBadge) {{
             catBadge.innerText = 'Air Quality is ' + catName;
             catBadge.style.color = catColor;
             catBadge.style.background = catBg;
             catBadge.style.borderColor = catBorder;
-        }
+        }}
 
         var promEl = document.getElementById('hero-prominent-val');
         if (promEl) promEl.innerText = prominent;
@@ -896,69 +1056,69 @@ custom_aqi_script_html = """
         if (pm10El) pm10El.innerText = (val * 1.046).toFixed(2) + ' µg/m³';
 
         var thumb = document.getElementById('hero-spectrum-thumb');
-        if (thumb) {
+        if (thumb) {{
             var pct = Math.max(4, Math.min(96, (val / 500) * 100));
             thumb.style.left = pct + '%';
             thumb.style.borderColor = catColor;
-        }
+        }}
 
-        if (group !== window.currentAvatarGroup) {
-            window.triggerSmokeTransition(group);
-            window.currentAvatarGroup = group;
-        }
-    };
+        if (group !== currentAvatarGroup) {{
+            triggerSmokeTransition(group);
+            currentAvatarGroup = group;
+        }}
+    }}
 
-    window.onSpectrumClick = function(event) {
+    function onSpectrumClick(event) {{
         var track = document.getElementById('spectrum-bar-track');
         if (!track) return;
         var rect = track.getBoundingClientRect();
         var clickX = event.clientX - rect.left;
         var pct = Math.max(0, Math.min(1, clickX / rect.width));
         var aqiVal = Math.round(pct * 500);
-        window.setCustomAqi(aqiVal);
-    };
+        setCustomAqi(aqiVal);
+    }}
 
-    window.setCustomAqi = function(val) {
+    function setCustomAqi(val) {{
         var slider = document.getElementById('aqi-sim-slider');
         if (slider) slider.value = val;
-        window.onAqiSliderChange(val);
+        onAqiSliderChange(val);
         var panel = document.getElementById('custom-slider-container');
-        if (panel && !window.isCustomSliderOpen) {
-            window.toggleCustomSlider();
-        }
-    };
+        if (panel && !isCustomSliderOpen) {{
+            toggleCustomSlider();
+        }}
+    }}
 
-    window.resetAqi = function() {
+    function resetAqi() {{
         var slider = document.getElementById('aqi-sim-slider');
         if (slider) slider.value = 113;
-        window.onAqiSliderChange(113);
-    };
+        onAqiSliderChange(113);
+    }}
 
-    window.triggerSmokeTransition = function(newGroup) {
+    function triggerSmokeTransition(newGroup) {{
         var canvas = document.getElementById('smoke-canvas');
         var avatarImg = document.getElementById('avatar-img');
         if (!canvas) return;
         var ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        var tints = {
-            good: { r: 215, g: 250, b: 235 },
-            moderate: { r: 254, g: 240, b: 140 },
-            poor: { r: 253, g: 186, b: 116 },
-            very_poor: { r: 239, g: 68, b: 68 },
-            severe: { r: 120, g: 25, b: 35 }
-        };
-        var tint = tints[newGroup] || { r: 210, g: 210, b: 210 };
+        var tints = {{
+            good: {{ r: 215, g: 250, b: 235 }},
+            moderate: {{ r: 254, g: 240, b: 140 }},
+            poor: {{ r: 253, g: 186, b: 116 }},
+            very_poor: {{ r: 239, g: 68, b: 68 }},
+            severe: {{ r: 120, g: 25, b: 35 }}
+        }};
+        var tint = tints[newGroup] || {{ r: 210, g: 210, b: 210 }};
 
         var particles = [];
         var totalParticles = 44;
         var cx = canvas.width / 2;
         var cy = canvas.height * 0.72;
 
-        for (var i = 0; i < totalParticles; i++) {
+        for (var i = 0; i < totalParticles; i++) {{
             var angle = Math.random() * Math.PI * 2;
             var dist = Math.random() * 32;
-            particles.push({
+            particles.push({{
                 x: cx + Math.cos(angle) * dist,
                 y: cy + Math.sin(angle) * dist * 0.5,
                 vx: (Math.random() - 0.5) * 3.4,
@@ -971,38 +1131,38 @@ custom_aqi_script_html = """
                 delay: Math.floor(Math.random() * 8),
                 life: 0,
                 maxLife: 48 + Math.random() * 22
-            });
-        }
+            }});
+        }}
 
         var frame = 0;
 
-        setTimeout(function() {
+        setTimeout(function() {{
             if (avatarImg) avatarImg.style.opacity = '0';
-        }, 120);
+        }}, 120);
 
-        setTimeout(function() {
-            if (avatarImg && window.AVATAR_MAP && window.AVATAR_MAP[newGroup]) {
-                avatarImg.src = window.AVATAR_MAP[newGroup];
-            }
-        }, 240);
+        setTimeout(function() {{
+            if (avatarImg && AVATAR_MAP && AVATAR_MAP[newGroup]) {{
+                avatarImg.src = AVATAR_MAP[newGroup];
+            }}
+        }}, 240);
 
-        setTimeout(function() {
+        setTimeout(function() {{
             if (avatarImg) avatarImg.style.opacity = '1';
-        }, 380);
+        }}, 380);
 
-        function animate() {
+        function animate() {{
             frame++;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             var alive = 0;
 
-            for (var i = 0; i < particles.length; i++) {
+            for (var i = 0; i < particles.length; i++) {{
                 var p = particles[i];
-                if (frame < p.delay) {
+                if (frame < p.delay) {{
                     alive++;
                     continue;
-                }
+                }}
                 p.life++;
-                if (p.life < p.maxLife) {
+                if (p.life < p.maxLife) {{
                     alive++;
                     p.x += p.vx;
                     p.y += p.vy;
@@ -1011,13 +1171,13 @@ custom_aqi_script_html = """
                     p.radius = Math.min(p.maxRadius, p.radius + p.growth);
 
                     var prog = p.life / p.maxLife;
-                    if (prog < 0.28) {
+                    if (prog < 0.28) {{
                         p.alpha = (prog / 0.28) * p.targetAlpha;
-                    } else {
+                    }} else {{
                         p.alpha = (1 - (prog - 0.28) / 0.72) * p.targetAlpha;
-                    }
+                    }}
 
-                    if (p.alpha > 0.01) {
+                    if (p.alpha > 0.01) {{
                         var grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
                         grad.addColorStop(0, 'rgba(' + tint.r + ',' + tint.g + ',' + tint.b + ',' + (p.alpha * 0.9).toFixed(3) + ')');
                         grad.addColorStop(0.5, 'rgba(' + tint.r + ',' + tint.g + ',' + tint.b + ',' + (p.alpha * 0.6).toFixed(3) + ')');
@@ -1026,30 +1186,25 @@ custom_aqi_script_html = """
                         ctx.beginPath();
                         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
                         ctx.fill();
-                    }
-                }
-            }
+                    }}
+                }}
+            }}
 
-            if (alive > 0) {
+            if (alive > 0) {{
                 requestAnimationFrame(animate);
-            } else {
+            }} else {{
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
-        }
+            }}
+        }}
 
         requestAnimationFrame(animate);
-    };
-})();
+    }}
 </script>
-"""
-custom_aqi_script_html = custom_aqi_script_html.replace("__B64_GOOD__", avatar_good_b64) \
-                                               .replace("__B64_MODERATE__", avatar_moderate_b64) \
-                                               .replace("__B64_POOR__", avatar_poor_b64) \
-                                               .replace("__B64_VERY_POOR__", avatar_very_poor_b64) \
-                                               .replace("__B64_SEVERE__", avatar_severe_b64)
-st.html(custom_aqi_script_html)
+</body>
+</html>"""
 
-# -----------------------------------------------------------------------------
+components.html(hero_component_html, height=450, scrolling=False)
+
 # 4. Major Air Pollutants Section (2x3 Grid matching Image 1)
 # -----------------------------------------------------------------------------
 st.html(f"""
