@@ -18,9 +18,7 @@ st.set_page_config(
 # -----------------------------------------------------------------------------
 # Asset Path Resolver (reads base64 for reliable Streamlit rendering)
 # -----------------------------------------------------------------------------
-PUBLIC_DIR = Path("src/public")
-if not PUBLIC_DIR.exists():
-    PUBLIC_DIR = Path("public")
+PUBLIC_DIR = Path("public")
 
 def get_base64_img(filename_stem: str) -> str:
     """Resolve image path and return base64 string."""
