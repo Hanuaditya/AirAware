@@ -1,0 +1,15 @@
+date,station,city,aqi_derived,aqi_category,pm25,pm10,prominent_pollutant,source,accessed_on,qc_status
+2024-01-08,"BTM Layout, Bengaluru - CPCB",Bengaluru,40,Good,18.9,39.6,PM10,CPCB CAAQMS / OpenCity Data Repository (BTM Layout),2026-11-03,UNFILTERED_RAW
+2024-01-09,"BTM Layout, Bengaluru - CPCB",Bengaluru,54,Satisfactory,15.7,54.0,PM10,CPCB CAAQMS / OpenCity Data Repository (BTM Layout),2026-11-03,UNFILTERED_RAW
+2024-01-10,"BTM Layout, Bengaluru - CPCB",Bengaluru,56,Satisfactory,21.0,56.0,PM10,CPCB CAAQMS / OpenCity Data Repository (BTM Layout),2026-11-03,UNFILTERED_RAW
+2024-01-11,"BTM Layout, Bengaluru - CPCB",Bengaluru,63,Satisfactory,17.7,62.7,PM10,CPCB CAAQMS / OpenCity Data Repository (BTM Layout),2026-11-03,UNFILTERED_RAW
+2024-01-12,"BTM Layout, Bengaluru - CPCB",Bengaluru,61,Satisfactory,23.9,60.7,PM10,CPCB CAAQMS / OpenCity Data Repository (BTM Layout),2026-11-03,UNFILTERED_RAW
+2024-01-13,"BTM Layout, Bengaluru - CPCB",Bengaluru,83,Satisfactory,17.3,82.6,PM10,CPCB CAAQMS / OpenCity Data Repository (BTM Layout),2026-11-03,UNFILTERED_RAW
+2024-01-14,"BTM Layout, Bengaluru - CPCB",Bengaluru,86,Satisfactory,19.2,86.0,PM10,CPCB CAAQMS / OpenCity Data Repository (BTM Layout),2026-11-03,UNFILTERED_RAW
+2024-01-15,"BTM Layout, Bengaluru - CPCB",Bengaluru,80,Satisfactory,19.7,80.2,PM10,CPCB CAAQMS / OpenCity Data Repository (BTM Layout),2026-11-03,UNFILTERED_RAW
+2024-01-16,"BTM Layout, Bengaluru - CPCB",Bengaluru,214,Poor,19.3,263.9,PM10,CPCB CAAQMS / OpenCity Data Repository (BTM Layout),2026-11-03,UNFILTERED_RAW
+2024-01-17,"BTM Layout, Bengaluru - CPCB",Bengaluru,84,Satisfactory,19.0,84.4,PM10,CPCB CAAQMS / OpenCity Data Repository (BTM Layout),2026-11-03,UNFILTERED_RAW
+2024-01-18,"BTM Layout, Bengaluru - CPCB",Bengaluru,78,Satisfactory,15.0,77.7,PM10,CPCB CAAQMS / OpenCity Data Repository (BTM Layout),2026-11-03,UNFILTERED_RAW
+2024-01-19,"BTM Layout, Bengaluru - CPCB",Bengaluru,66,Satisfactory,18.6,65.7,PM10,CPCB CAAQMS / OpenCity Data Repository (BTM Layout),2026-11-03,UNFILTERED_RAW
+2024-01-20,"BTM Layout, Bengaluru - CPCB",Bengaluru,71,Satisfactory,19.0,70.7,PM10,CPCB CAAQMS / OpenCity Data Repository (BTM Layout),2026-11-03,UNFILTERED_RAW
+2024-01-21,"BTM Layout, Bengaluru - CPCB",Bengaluru,71,Satisfactory,13.0,70.8,PM10,CPCB CAAQMS / OpenCity Data Repository (BTM Layout),2026-11-03,UNFILTERED_RAW

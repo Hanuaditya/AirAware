@@ -1,0 +1,77 @@
+# CPCB National Air Quality Index (AQI) Breakpoints
+# Verified against CPCB "National Air Quality Index" / "About National AQI" documentation (October 2014)
+# Concentration units: µg/m³ (24-hour average)
+# Sub-index formula: I_p = ((I_hi - I_lo) / (BP_hi - BP_lo)) * (C_p - BP_lo) + I_lo
+
+pm25:
+  - bp_lo: 0
+    bp_hi: 30
+    i_lo: 0
+    i_hi: 50
+    category: "Good"
+  - bp_lo: 31
+    bp_hi: 60
+    i_lo: 51
+    i_hi: 100
+    category: "Satisfactory"
+  - bp_lo: 61
+    bp_hi: 90
+    i_lo: 101
+    i_hi: 200
+    category: "Moderate"
+  - bp_lo: 91
+    bp_hi: 120
+    i_lo: 201
+    i_hi: 300
+    category: "Poor"
+  - bp_lo: 121
+    bp_hi: 250
+    i_lo: 301
+    i_hi: 400
+    category: "Very Poor"
+  - bp_lo: 251
+    bp_hi: 400
+    i_lo: 401
+    i_hi: 500
+    category: "Severe"
+
+pm10:
+  - bp_lo: 0
+    bp_hi: 50
+    i_lo: 0
+    i_hi: 50
+    category: "Good"
+  - bp_lo: 51
+    bp_hi: 100
+    i_lo: 51
+    i_hi: 100
+    category: "Satisfactory"
+  - bp_lo: 101
+    bp_hi: 250
+    i_lo: 101
+    i_hi: 200
+    category: "Moderate"
+  - bp_lo: 251
+    bp_hi: 350
+    i_lo: 201
+    i_hi: 300
+    category: "Poor"
+  - bp_lo: 351
+    bp_hi: 430
+    i_lo: 301
+    i_hi: 400
+    category: "Very Poor"
+  - bp_lo: 431
+    bp_hi: 500
+    i_lo: 401
+    i_hi: 500
+    category: "Severe"
+
+standards:
+  naaqs_24h:
+    pm25: 60.0
+    pm10: 100.0
+  who_2021_24h:
+    pm25: 15.0
+    pm10: 45.0
+

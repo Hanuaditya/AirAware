@@ -1,0 +1,16 @@
+date,station,city,aqi_reported,aqi_category,pm25,pm10,prominent_pollutant_reported,source,accessed_on
+2026-10-01,DEMO Station - Synthetic Only,Bengaluru,45,Good,25.0,42.0,PM10,DEMO SYNTHETIC DATA - NOT OFFICIAL CPCB,2026-11-03
+2026-10-02,DEMO Station - Synthetic Only,Bengaluru,65,Satisfactory,38.0,65.0,PM10,DEMO SYNTHETIC DATA - NOT OFFICIAL CPCB,2026-11-03
+2026-10-03,DEMO Station - Synthetic Only,Bengaluru,78,Satisfactory,45.0,78.0,PM10,DEMO SYNTHETIC DATA - NOT OFFICIAL CPCB,2026-11-03
+2026-10-04,DEMO Station - Synthetic Only,Bengaluru,115,Moderate,68.0,110.0,PM2.5,DEMO SYNTHETIC DATA - NOT OFFICIAL CPCB,2026-11-03
+2026-10-05,DEMO Station - Synthetic Only,Bengaluru,140,Moderate,75.0,125.0,PM2.5,DEMO SYNTHETIC DATA - NOT OFFICIAL CPCB,2026-11-03
+2026-10-06,DEMO Station - Synthetic Only,Bengaluru,80,Satisfactory,72.0,60.0,PM2.5,DEMO SYNTHETIC DATA - NOT OFFICIAL CPCB,2026-11-03
+2026-10-07,DEMO Station - Synthetic Only,Bengaluru,95,Satisfactory,52.0,90.0,PM10,DEMO SYNTHETIC DATA - NOT OFFICIAL CPCB,2026-11-03
+2026-10-08,DEMO Station - Synthetic Only,Bengaluru,105,Moderate,62.0,102.0,PM2.5,DEMO SYNTHETIC DATA - NOT OFFICIAL CPCB,2026-11-03
+2026-10-09,DEMO Station - Synthetic Only,Bengaluru,215,Poor,95.0,260.0,PM10,DEMO SYNTHETIC DATA - NOT OFFICIAL CPCB,2026-11-03
+2026-10-10,DEMO Station - Synthetic Only,Bengaluru,195,Moderate,88.0,220.0,PM10,DEMO SYNTHETIC DATA - NOT OFFICIAL CPCB,2026-11-03
+2026-10-11,DEMO Station - Synthetic Only,Bengaluru,180,Moderate,82.0,190.0,PM10,DEMO SYNTHETIC DATA - NOT OFFICIAL CPCB,2026-11-03
+2026-10-12,DEMO Station - Synthetic Only,Bengaluru,85,Satisfactory,48.0,80.0,PM10,DEMO SYNTHETIC DATA - NOT OFFICIAL CPCB,2026-11-03
+2026-10-13,DEMO Station - Synthetic Only,Bengaluru,70,Satisfactory,39.0,68.0,PM10,DEMO SYNTHETIC DATA - NOT OFFICIAL CPCB,2026-11-03
+2026-10-14,DEMO Station - Synthetic Only,Bengaluru,55,Satisfactory,32.0,54.0,PM10,DEMO SYNTHETIC DATA - NOT OFFICIAL CPCB,2026-11-03
+

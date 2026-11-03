@@ -1,0 +1,55 @@
+{
+  "primary_station": "Silk Board, Bengaluru - KSPCB",
+  "primary_agency": "KSPCB",
+  "city": "Bengaluru",
+  "state": "Karnataka",
+  "portal_url": "https://airquality.cpcb.gov.in/ccr/#/caaqm-dashboard-all/caaqm-landing/data",
+  "observation_window": "2026-10-20 to 2026-11-02",
+  "total_days": 14,
+  "access_date": "2026-11-03",
+  "date_label_convention": "window_start (YYYY-MM-DD of the 22:41 rolling average window opening)",
+  "avg_period": "24H (portal pre-averaged)",
+  "validity_note": "portal 24H mean as provided — no sub-hourly records; 16-hour completeness rule not applicable",
+  "comparison_window": "2026-10-08 to 2026-10-21",
+  "comparison_stations": [
+    "BTM Layout, Bengaluru - CPCB",
+    "Silk Board, Bengaluru - KSPCB"
+  ],
+  "peenya_exclusion_reason": "Peenya PM10 sensor reported 0/14 valid readings during the primary window (2026-10-20 to 2026-11-02). Additionally, Toluene gas sensor flat-lined for 19 consecutive 24H windows. AQI derivation requires at least one particulate fraction; without PM10, a meaningful dominant-pollutant analysis is not possible. Peenya is retained in the data quality audit section only.",
+  "stations": {
+    "silk_board": {
+      "station": "Silk Board, Bengaluru - KSPCB",
+      "agency": "KSPCB",
+      "source_file": "Advance_Search_1793726002868.xlsx",
+      "sha256": "c03dd66c3edded3f91be65d4a8e23a0938d7756e92f511f4e705ca1cfc9627c8",
+      "download_timestamp": "03-11-2026 22:43:19",
+      "portal_from": "2026-10-05 22:41:03",
+      "portal_to": "2026-11-03 22:41:03"
+    },
+    "btm_layout": {
+      "station": "BTM Layout, Bengaluru - CPCB",
+      "agency": "CPCB",
+      "source_file": "Advance_Search_1793725987823.xlsx",
+      "sha256": "5570834e1a555d5db40b49bd042e7637befc342800fbeb84baa10c79808237ca",
+      "download_timestamp": "03-11-2026 22:43:04",
+      "portal_from": "2026-10-05 22:41:03",
+      "portal_to": "2026-11-03 22:41:03"
+    },
+    "peenya": {
+      "station": "Peenya, Bengaluru - CPCB",
+      "agency": "CPCB",
+      "source_file": "pee.xlsx",
+      "sha256": "aecb499d6e549a7ba03263b67585726af051f69120db9793e5a6ff224f0f4311",
+      "download_timestamp": "03-11-2026 22:48:14",
+      "portal_from": "2026-10-05 22:41:03",
+      "portal_to": "2026-11-03 22:41:03"
+    }
+  },
+  "quality_control": {
+    "instrument_saturation_threshold": 999.0,
+    "negative_values_flagged": true,
+    "flatline_detection_threshold_windows": 10,
+    "peenya_pm10_valid_windows_in_primary_period": 0,
+    "peenya_toluene_flatline_windows": 19
+  }
+}

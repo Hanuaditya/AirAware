@@ -1,0 +1,56 @@
+# AirAware Alert Engine Configuration
+
+engine:
+  hysteresis_points: 10
+  stale_limit_hours: 36.0
+  immediate_upgrade: true
+
+levels:
+  - name: "NORMAL"
+    min_aqi: 0
+    max_aqi: 50
+    severity: 0
+    badge: "green"
+    action_label: "No action required"
+    description: "Air quality is good. Enjoy outdoor activities."
+
+  - name: "INFO"
+    min_aqi: 51
+    max_aqi: 100
+    severity: 1
+    badge: "blue"
+    action_label: "Informational"
+    description: "Air quality is satisfactory. Sensitive groups monitor symptoms."
+
+  - name: "ADVISORY"
+    min_aqi: 101
+    max_aqi: 200
+    severity: 2
+    badge: "yellow"
+    action_label: "Advisory for sensitive groups"
+    description: "Moderate pollution. Asthmatics and cardiac patients limit exertion."
+
+  - name: "WARNING"
+    min_aqi: 201
+    max_aqi: 300
+    severity: 3
+    badge: "orange"
+    action_label: "Warning: limit exposure"
+    description: "Poor air quality. Mask recommended for vulnerable groups; avoid prolonged outdoor exertion."
+
+  - name: "DANGER"
+    min_aqi: 301
+    max_aqi: 400
+    severity: 4
+    badge: "red"
+    action_label: "Danger: severe health risk"
+    description: "Very poor air quality. Children, elderly and cardiac patients stay indoors."
+
+  - name: "EMERGENCY"
+    min_aqi: 401
+    max_aqi: 500
+    severity: 5
+    badge: "purple"
+    action_label: "Public health emergency"
+    description: "Severe pollution emergency. City-wide health advisory; restrict outdoor exposure."
+

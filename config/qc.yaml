@@ -1,0 +1,23 @@
+# AirAware Bengaluru Quality Control (QC) Configuration
+
+instrument_limits:
+  pm10:
+    max_valid: 999.0      # Readings >= 999.0 or equal to 999.99 represent instrument saturation
+    min_valid: 0.0
+    saturation_sentinel: 999.99
+  pm25:
+    max_valid: 999.0
+    min_valid: 0.0
+    saturation_sentinel: 999.99
+
+sampling_completeness:
+  min_readings_per_hour: 3   # 75% completeness rule for 15-minute intervals (at least 3 of 4)
+  min_hours_per_day: 16      # CPCB minimum 16 valid hours required for sub-hourly CAAQMS data
+  portal_24h_mode: true      # Set to true when ingesting pre-averaged CPCB 24H portal exports
+  validity_note: "portal 24H mean as provided (no sub-hourly validity records available)"
+
+flatline_check:
+  min_consecutive_windows: 10 # Flag series with >= 10 identical consecutive values as sensor failure/frozen
+
+date_labeling:
+  convention: "window_start"  # Use 24-hour window start date as daily label (e.g. 2026-10-20 for window starting 2026-10-20 22:41)

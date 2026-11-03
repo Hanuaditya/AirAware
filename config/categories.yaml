@@ -1,0 +1,57 @@
+# CPCB Official AQI Categories, Ranges, Accessible Colors, and Health Statements
+
+categories:
+  - name: "Good"
+    aqi_min: 0
+    aqi_max: 50
+    color: "#2e7d32"
+    text_color: "#ffffff"
+    health_impact: "Minimal impact."
+    advisory: "Air quality is considered satisfactory, and air pollution poses little or no risk."
+    alert_level: "NORMAL"
+
+  - name: "Satisfactory"
+    aqi_min: 51
+    aqi_max: 100
+    color: "#558b2f"
+    text_color: "#ffffff"
+    health_impact: "Minor breathing discomfort to sensitive people."
+    advisory: "Air quality is acceptable; however, sensitive individuals may experience minor irritation."
+    alert_level: "INFO"
+
+  - name: "Moderate"
+    aqi_min: 101
+    aqi_max: 200
+    color: "#f57f17"
+    text_color: "#000000"
+    health_impact: "Breathing discomfort to people with lung, asthma, and heart diseases."
+    advisory: "Sensitive groups (children, elderly, those with respiratory conditions) should reduce prolonged heavy outdoor exertion."
+    alert_level: "ADVISORY"
+
+  - name: "Poor"
+    aqi_min: 201
+    aqi_max: 300
+    color: "#e65100"
+    text_color: "#ffffff"
+    health_impact: "Breathing discomfort to most people on prolonged exposure."
+    advisory: "Children and adults with respiratory diseases should avoid prolonged outdoor exertion; general public should limit prolonged outdoor exertion."
+    alert_level: "WARNING"
+
+  - name: "Very Poor"
+    aqi_min: 301
+    aqi_max: 400
+    color: "#c2185b"
+    text_color: "#ffffff"
+    health_impact: "Respiratory illness on prolonged exposure."
+    advisory: "Active children and adults, and people with respiratory disease, such as asthma, should avoid outdoor exertion; everyone else should limit outdoor exertion."
+    alert_level: "DANGER"
+
+  - name: "Severe"
+    aqi_min: 401
+    aqi_max: 500
+    color: "#4a148c"
+    text_color: "#ffffff"
+    health_impact: "Affects healthy people and seriously impacts those with existing diseases."
+    advisory: "Everyone should avoid all outdoor exertion. Sensitive groups should remain indoors and keep activity levels low."
+    alert_level: "EMERGENCY"
+
