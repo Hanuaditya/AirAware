@@ -75,6 +75,10 @@ svg_mumbai    = get_svg_b64("mumbai")
 svg_new_delhi = get_svg_b64("new-delhi")
 svg_pune      = get_svg_b64("pune")
 
+# Chart Toggle SVGs
+svg_bar_chart  = get_svg_b64("bar-chart-svgrepo-com")
+svg_line_chart = get_svg_b64("line-bar-chart-svgrepo-com")
+
 # -----------------------------------------------------------------------------
 # Generate 45 Real-Time CSS Animated Raindrops & Splashes
 # -----------------------------------------------------------------------------
@@ -853,6 +857,95 @@ st.html("""
 <div style="margin-top: 28px; margin-bottom: 6px;"></div>
 """)
 
+# Segmented Control styling using authentic bar/line SVGs
+st.html(f"""
+<style>
+    div[data-testid="stSegmentedControl"] {{
+        background: #0E1420 !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 8px !important;
+        padding: 3px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    }}
+    
+    div[data-testid="stSegmentedControl"] [role="radiogroup"] {{
+        gap: 4px !important;
+    }}
+    
+    div[data-testid="stSegmentedControl"] button {{
+        border-radius: 6px !important;
+        padding: 4px 12px !important;
+        font-size: 0.82rem !important;
+        font-weight: 600 !important;
+        border: 1px solid transparent !important;
+        background: transparent !important;
+        color: #CBD5E1 !important;
+        transition: all 0.15s ease !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 7px !important;
+    }}
+    
+    div[data-testid="stSegmentedControl"] button p {{
+        margin: 0 !important;
+        font-weight: 600 !important;
+        font-size: 0.82rem !important;
+    }}
+
+    /* Bar button SVG icon */
+    div[data-testid="stSegmentedControl"] button:nth-child(1)::before {{
+        content: "" !important;
+        display: inline-block !important;
+        width: 17px !important;
+        height: 17px !important;
+        background-image: url("data:image/svg+xml;base64,{svg_bar_chart}") !important;
+        background-size: contain !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        filter: brightness(0) invert(1) !important;
+        opacity: 0.85 !important;
+        flex-shrink: 0 !important;
+    }}
+
+    /* Line button SVG icon */
+    div[data-testid="stSegmentedControl"] button:nth-child(2)::before {{
+        content: "" !important;
+        display: inline-block !important;
+        width: 17px !important;
+        height: 17px !important;
+        background-image: url("data:image/svg+xml;base64,{svg_line_chart}") !important;
+        background-size: contain !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        filter: brightness(0) invert(1) !important;
+        opacity: 0.85 !important;
+        flex-shrink: 0 !important;
+    }}
+
+    /* Active / Selected button: Red border & red text (matching user screenshot) */
+    div[data-testid="stSegmentedControl"] button[aria-checked="true"] {{
+        background: rgba(239, 68, 68, 0.1) !important;
+        border: 1px solid #EF4444 !important;
+        color: #F87171 !important;
+    }}
+
+    div[data-testid="stSegmentedControl"] button[aria-checked="true"] p {{
+        color: #F87171 !important;
+    }}
+
+    div[data-testid="stSegmentedControl"] button[aria-checked="true"]::before {{
+        filter: invert(45%) sepia(85%) saturate(2500%) hue-rotate(335deg) brightness(105%) contrast(95%) !important;
+        opacity: 1 !important;
+    }}
+
+    /* Inactive hover state */
+    div[data-testid="stSegmentedControl"] button:hover {{
+        background: rgba(255, 255, 255, 0.05) !important;
+        color: #FFFFFF !important;
+    }}
+</style>
+""")
+
 # Top Controls Bar: Title on left, [Bar/Line toggle], [Time Window select], [Standard select] on right
 c_hist_title, c_hist_toggle, c_hist_range, c_hist_std = st.columns([3.8, 1.3, 1.4, 1.1])
 
@@ -868,8 +961,8 @@ with c_hist_title:
 with c_hist_toggle:
     hist_chart_view = st.segmented_control(
         "Chart Style",
-        options=["📊 Bar", "📈 Line"],
-        default="📊 Bar",
+        options=["Bar", "Line"],
+        default="Bar",
         label_visibility="collapsed",
         key="hist_chart_view_ctrl"
     )
@@ -989,7 +1082,7 @@ st.html(f"""
 # Render Chart
 fig_hist = go.Figure()
 
-if hist_chart_view == "📈 Line":
+if hist_chart_view == "Line" or hist_chart_view == "📈 Line":
     fig_hist.add_trace(go.Scatter(
         x=chart_x,
         y=chart_y,
