@@ -35,9 +35,17 @@ def get_base64_img(filename_stem: str) -> str:
     return ""
 
 # Prefer clean transparent PNG avatar
-avatar_b64 = get_base64_img("avatar_clean")
-if not avatar_b64:
-    avatar_b64 = get_base64_img("avatar")
+avatar_good_b64 = get_base64_img("avatar_good")
+avatar_moderate_b64 = get_base64_img("avatar_moderate") or get_base64_img("avatar_clean") or get_base64_img("avatar")
+avatar_poor_b64 = get_base64_img("avatar_poor")
+avatar_very_poor_b64 = get_base64_img("avatar_very_poor")
+avatar_severe_b64 = get_base64_img("avatar_severe")
+
+avatar_b64 = avatar_moderate_b64
+if not avatar_good_b64: avatar_good_b64 = avatar_b64
+if not avatar_poor_b64: avatar_poor_b64 = avatar_b64
+if not avatar_very_poor_b64: avatar_very_poor_b64 = avatar_poor_b64
+if not avatar_severe_b64: avatar_severe_b64 = avatar_very_poor_b64
 
 bg_b64 = get_base64_img("bg_blended")
 if not bg_b64:
@@ -248,16 +256,30 @@ st.html(f"""
         position: relative;
         z-index: 3;
         padding-bottom: 2px;
+        min-width: 190px;
+        height: 195px;
     }}
     .mascot-img {{
         height: 175px;
         width: auto;
+        max-width: 180px;
         object-fit: contain;
         filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.7));
-        transition: transform 0.3s ease;
+        transition: transform 0.3s ease, opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform, opacity;
+        position: relative;
+        z-index: 2;
     }}
     .mascot-img:hover {{
         transform: translateY(-4px) scale(1.03);
+    }}
+    .smoke-canvas {{
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        pointer-events: none;
+        z-index: 5;
     }}
     .mascot-shadow {{
         width: 85px;
@@ -632,9 +654,10 @@ st.html(f"""
         </div>
         
         <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(56, 189, 248, 0.35); color: #38BDF8; padding: 7px 16px; border-radius: 12px; font-size: 0.82rem; font-weight: 700; cursor: pointer;">
-                ⌖ Locate me
-            </span>
+            <button id="custom-toggle-btn" onclick="window.toggleCustomSlider()" style="background: rgba(56, 139, 253, 0.14); border: 1px solid rgba(56, 189, 248, 0.5); color: #38BDF8; padding: 7px 16px; border-radius: 999px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; box-shadow: 0 0 14px rgba(56, 189, 248, 0.2); transition: all 0.25s ease;">
+                <span>⚙️</span>
+                <span id="custom-btn-label">Custom AQI</span>
+            </button>
             <span style="background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); color: #CBD5E1; padding: 7px 12px; border-radius: 12px; font-size: 0.85rem; cursor: pointer;">
                 ♡
             </span>
@@ -654,37 +677,66 @@ st.html(f"""
                 <span style="color: #CBD5E1; font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px;">Live AQI</span>
             </div>
             <div style="display: flex; align-items: baseline; gap: 14px; margin-top: 4px;">
-                <span style="font-size: 5.4rem; font-weight: 900; color: #FACC15; line-height: 1; text-shadow: 0 4px 18px rgba(250, 204, 21, 0.35);">113</span>
+                <span id="hero-aqi-num" style="font-size: 5.4rem; font-weight: 900; color: #FACC15; line-height: 1; text-shadow: 0 4px 18px rgba(250, 204, 21, 0.35); transition: color 0.2s ease;">113</span>
                 <span style="font-size: 1.1rem; font-weight: 700; color: #E2E8F0;">AQI (CPCB)</span>
             </div>
             <div style="margin-top: 10px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                <span class="category-badge">Air Quality is Moderate</span>
+                <span id="hero-cat-badge" class="category-badge" style="transition: all 0.25s ease;">Air Quality is Moderate</span>
                 <span style="color: #FFFFFF; font-size: 0.95rem; font-weight: 600;">
-                    Prominent: <b style="color: #F87171; background: rgba(239, 68, 68, 0.2); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.35);">PM10</b>
+                    Prominent: <b id="hero-prominent-val" style="color: #F87171; background: rgba(239, 68, 68, 0.2); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.35);">PM10</b>
                 </span>
             </div>
             <div style="margin-top: 20px; max-width: 440px;">
                 <div style="display: flex; justify-content: space-between; font-size: 0.88rem; color: #CBD5E1;">
-                    <span>PM2.5: <b style="color: #FFFFFF;">17.71 µg/m³</b></span>
-                    <span>PM10: <b style="color: #FFFFFF;">118.22 µg/m³</b></span>
+                    <span>PM2.5: <b id="hero-pm25-val" style="color: #FFFFFF;">17.71 µg/m³</b></span>
+                    <span>PM10: <b id="hero-pm10-val" style="color: #FFFFFF;">118.22 µg/m³</b></span>
                 </div>
-                <div class="spectrum-bar">
-                    <div style="position: absolute; left: clamp(4%, {needle_pct}%, 96%); top: -6px; transform: translateX(-50%); width: 14px; height: 21px; background: #FFFFFF; border-radius: 4px; box-shadow: 0 0 12px rgba(0,0,0,0.9); border: 2.5px solid #F59E0B;"></div>
+
+                <!-- Interactive Custom Simulation Drawer -->
+                <div id="custom-slider-container" style="display: none; margin-top: 14px; margin-bottom: 12px; background: rgba(15, 23, 42, 0.92); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 14px; padding: 12px 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); backdrop-filter: blur(12px);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 0.9rem;">🎚️</span>
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #38BDF8; letter-spacing: 0.5px; text-transform: uppercase;">Simulate AQI Spectrum</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span id="slider-val-badge" style="background: rgba(250, 204, 21, 0.2); color: #FACC15; font-size: 0.82rem; font-weight: 800; padding: 2px 10px; border-radius: 6px; border: 1px solid rgba(250, 204, 21, 0.4);">113 AQI</span>
+                            <button onclick="window.resetAqi()" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); color: #CBD5E1; font-size: 0.74rem; font-weight: 600; padding: 3px 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">↺ Reset</button>
+                        </div>
+                    </div>
+                    <input type="range" id="aqi-sim-slider" min="10" max="480" value="113" step="1"
+                        oninput="window.onAqiSliderChange(this.value)"
+                        style="width: 100%; height: 7px; border-radius: 5px; accent-color: #38BDF8; cursor: pointer; outline: none; margin: 4px 0 6px 0;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #94A3B8;">
+                        <span>10 (Pristine)</span>
+                        <span>50 (Good)</span>
+                        <span>100 (Sat.)</span>
+                        <span>200 (Mod.)</span>
+                        <span>300 (Poor)</span>
+                        <span>400 (V.Poor)</span>
+                        <span>480 (Severe)</span>
+                    </div>
+                </div>
+
+                <!-- CPCB Spectrum Bar (Interactive) -->
+                <div class="spectrum-bar" id="spectrum-bar-track" style="cursor: pointer; position: relative;" onclick="window.onSpectrumClick(event)" title="Click anywhere along the spectrum to jump to that AQI">
+                    <div id="hero-spectrum-thumb" style="position: absolute; left: clamp(4%, {needle_pct}%, 96%); top: -6px; transform: translateX(-50%); width: 14px; height: 21px; background: #FFFFFF; border-radius: 4px; box-shadow: 0 0 12px rgba(0,0,0,0.9); border: 2.5px solid #F59E0B; transition: left 0.1s ease-out, border-color 0.2s ease;"></div>
                 </div>
                 <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: #E2E8F0; margin-top: 6px; font-weight: 600;">
-                    <span>0 Good</span>
-                    <span>50 Satisfactory</span>
-                    <span>100 Moderate</span>
-                    <span>200 Poor</span>
-                    <span>300 V.Poor</span>
-                    <span>400+ Severe</span>
+                    <span style="cursor: pointer;" onclick="window.setCustomAqi(35)">0 Good</span>
+                    <span style="cursor: pointer;" onclick="window.setCustomAqi(80)">50 Satisfactory</span>
+                    <span style="cursor: pointer;" onclick="window.setCustomAqi(150)">100 Moderate</span>
+                    <span style="cursor: pointer;" onclick="window.setCustomAqi(250)">200 Poor</span>
+                    <span style="cursor: pointer;" onclick="window.setCustomAqi(350)">300 V.Poor</span>
+                    <span style="cursor: pointer;" onclick="window.setCustomAqi(450)">400+ Severe</span>
                 </div>
             </div>
         </div>
 
-        <!-- Center: Transparent Mascot Character standing on ground horizon -->
-        <div class="mascot-wrapper">
-            <img src="data:image/png;base64,{avatar_b64}" alt="Shinchan Mascot in Rain" class="mascot-img">
+        <!-- Center: Transparent Mascot Character standing on ground horizon with Dynamic Volumetric Smoke -->
+        <div class="mascot-wrapper" id="mascot-container">
+            <canvas id="smoke-canvas" class="smoke-canvas" width="240" height="240"></canvas>
+            <img id="avatar-img" src="data:image/png;base64,{avatar_moderate_b64}" alt="Air Quality Mascot" class="mascot-img">
             <div class="mascot-shadow"></div>
         </div>
 
@@ -719,6 +771,283 @@ st.html(f"""
     </div>
 </div>
 """)
+
+# Custom AQI Interactive Simulator & Smoke Burst Transition Script
+custom_aqi_script_html = """
+<script>
+(function() {
+    window.AVATAR_MAP = {
+        'good': 'data:image/png;base64,__B64_GOOD__',
+        'moderate': 'data:image/png;base64,__B64_MODERATE__',
+        'poor': 'data:image/png;base64,__B64_POOR__',
+        'very_poor': 'data:image/png;base64,__B64_VERY_POOR__',
+        'severe': 'data:image/png;base64,__B64_SEVERE__'
+    };
+
+    window.currentAvatarGroup = 'moderate';
+    window.isCustomSliderOpen = false;
+
+    window.toggleCustomSlider = function() {
+        var panel = document.getElementById('custom-slider-container');
+        var btn = document.getElementById('custom-toggle-btn');
+        var label = document.getElementById('custom-btn-label');
+        if (!panel) return;
+        
+        window.isCustomSliderOpen = !window.isCustomSliderOpen;
+        if (window.isCustomSliderOpen) {
+            panel.style.display = 'block';
+            if (btn) {
+                btn.style.background = 'rgba(56, 189, 248, 0.28)';
+                btn.style.borderColor = '#38BDF8';
+                btn.style.boxShadow = '0 0 16px rgba(56, 189, 248, 0.45)';
+            }
+            if (label) label.innerText = 'Close Custom';
+        } else {
+            panel.style.display = 'none';
+            if (btn) {
+                btn.style.background = 'rgba(56, 139, 253, 0.14)';
+                btn.style.borderColor = 'rgba(56, 189, 248, 0.5)';
+                btn.style.boxShadow = '0 0 14px rgba(56, 189, 248, 0.2)';
+            }
+            if (label) label.innerText = 'Custom AQI';
+        }
+    };
+
+    window.onAqiSliderChange = function(rawVal) {
+        var val = parseInt(rawVal, 10);
+        if (isNaN(val)) return;
+
+        var badge = document.getElementById('slider-val-badge');
+        if (badge) badge.innerText = val + ' AQI';
+
+        var numEl = document.getElementById('hero-aqi-num');
+        if (numEl) numEl.innerText = val;
+
+        var catName = 'Moderate';
+        var catColor = '#FACC15';
+        var catBg = 'rgba(250, 204, 21, 0.2)';
+        var catBorder = 'rgba(250, 204, 21, 0.4)';
+        var group = 'moderate';
+        var prominent = 'PM10';
+
+        if (val <= 50) {
+            catName = 'Good';
+            catColor = '#34D399';
+            catBg = 'rgba(16, 185, 129, 0.25)';
+            catBorder = 'rgba(16, 185, 129, 0.45)';
+            group = 'good';
+            prominent = 'PM2.5';
+        } else if (val <= 100) {
+            catName = 'Satisfactory';
+            catColor = '#A3E635';
+            catBg = 'rgba(132, 204, 22, 0.25)';
+            catBorder = 'rgba(132, 204, 22, 0.45)';
+            group = 'moderate';
+            prominent = 'PM10';
+        } else if (val <= 200) {
+            catName = 'Moderate';
+            catColor = '#FACC15';
+            catBg = 'rgba(250, 204, 21, 0.25)';
+            catBorder = 'rgba(250, 204, 21, 0.45)';
+            group = 'moderate';
+            prominent = 'PM10';
+        } else if (val <= 300) {
+            catName = 'Poor';
+            catColor = '#FB923C';
+            catBg = 'rgba(249, 115, 22, 0.25)';
+            catBorder = 'rgba(249, 115, 22, 0.45)';
+            group = 'poor';
+            prominent = 'PM10';
+        } else if (val <= 400) {
+            catName = 'Very Poor';
+            catColor = '#F87171';
+            catBg = 'rgba(239, 68, 68, 0.25)';
+            catBorder = 'rgba(239, 68, 68, 0.45)';
+            group = 'very_poor';
+            prominent = 'PM10';
+        } else {
+            catName = 'Severe';
+            catColor = '#EF4444';
+            catBg = 'rgba(153, 27, 27, 0.4)';
+            catBorder = 'rgba(239, 68, 68, 0.65)';
+            group = 'severe';
+            prominent = 'PM10';
+        }
+
+        if (numEl) {
+            numEl.style.color = catColor;
+            numEl.style.textShadow = '0 4px 18px ' + catColor + '55';
+        }
+
+        var catBadge = document.getElementById('hero-cat-badge');
+        if (catBadge) {
+            catBadge.innerText = 'Air Quality is ' + catName;
+            catBadge.style.color = catColor;
+            catBadge.style.background = catBg;
+            catBadge.style.borderColor = catBorder;
+        }
+
+        var promEl = document.getElementById('hero-prominent-val');
+        if (promEl) promEl.innerText = prominent;
+
+        var pm25El = document.getElementById('hero-pm25-val');
+        var pm10El = document.getElementById('hero-pm10-val');
+        if (pm25El) pm25El.innerText = (val * 0.156).toFixed(2) + ' µg/m³';
+        if (pm10El) pm10El.innerText = (val * 1.046).toFixed(2) + ' µg/m³';
+
+        var thumb = document.getElementById('hero-spectrum-thumb');
+        if (thumb) {
+            var pct = Math.max(4, Math.min(96, (val / 500) * 100));
+            thumb.style.left = pct + '%';
+            thumb.style.borderColor = catColor;
+        }
+
+        if (group !== window.currentAvatarGroup) {
+            window.triggerSmokeTransition(group);
+            window.currentAvatarGroup = group;
+        }
+    };
+
+    window.onSpectrumClick = function(event) {
+        var track = document.getElementById('spectrum-bar-track');
+        if (!track) return;
+        var rect = track.getBoundingClientRect();
+        var clickX = event.clientX - rect.left;
+        var pct = Math.max(0, Math.min(1, clickX / rect.width));
+        var aqiVal = Math.round(pct * 500);
+        window.setCustomAqi(aqiVal);
+    };
+
+    window.setCustomAqi = function(val) {
+        var slider = document.getElementById('aqi-sim-slider');
+        if (slider) slider.value = val;
+        window.onAqiSliderChange(val);
+        var panel = document.getElementById('custom-slider-container');
+        if (panel && !window.isCustomSliderOpen) {
+            window.toggleCustomSlider();
+        }
+    };
+
+    window.resetAqi = function() {
+        var slider = document.getElementById('aqi-sim-slider');
+        if (slider) slider.value = 113;
+        window.onAqiSliderChange(113);
+    };
+
+    window.triggerSmokeTransition = function(newGroup) {
+        var canvas = document.getElementById('smoke-canvas');
+        var avatarImg = document.getElementById('avatar-img');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        var tints = {
+            good: { r: 215, g: 250, b: 235 },
+            moderate: { r: 254, g: 240, b: 140 },
+            poor: { r: 253, g: 186, b: 116 },
+            very_poor: { r: 239, g: 68, b: 68 },
+            severe: { r: 120, g: 25, b: 35 }
+        };
+        var tint = tints[newGroup] || { r: 210, g: 210, b: 210 };
+
+        var particles = [];
+        var totalParticles = 44;
+        var cx = canvas.width / 2;
+        var cy = canvas.height * 0.72;
+
+        for (var i = 0; i < totalParticles; i++) {
+            var angle = Math.random() * Math.PI * 2;
+            var dist = Math.random() * 32;
+            particles.push({
+                x: cx + Math.cos(angle) * dist,
+                y: cy + Math.sin(angle) * dist * 0.5,
+                vx: (Math.random() - 0.5) * 3.4,
+                vy: -1.7 - Math.random() * 3.8,
+                radius: 18 + Math.random() * 16,
+                growth: 1.0 + Math.random() * 1.1,
+                maxRadius: 85 + Math.random() * 40,
+                alpha: 0.05,
+                targetAlpha: 0.68 + Math.random() * 0.25,
+                delay: Math.floor(Math.random() * 8),
+                life: 0,
+                maxLife: 48 + Math.random() * 22
+            });
+        }
+
+        var frame = 0;
+
+        setTimeout(function() {
+            if (avatarImg) avatarImg.style.opacity = '0';
+        }, 120);
+
+        setTimeout(function() {
+            if (avatarImg && window.AVATAR_MAP && window.AVATAR_MAP[newGroup]) {
+                avatarImg.src = window.AVATAR_MAP[newGroup];
+            }
+        }, 240);
+
+        setTimeout(function() {
+            if (avatarImg) avatarImg.style.opacity = '1';
+        }, 380);
+
+        function animate() {
+            frame++;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            var alive = 0;
+
+            for (var i = 0; i < particles.length; i++) {
+                var p = particles[i];
+                if (frame < p.delay) {
+                    alive++;
+                    continue;
+                }
+                p.life++;
+                if (p.life < p.maxLife) {
+                    alive++;
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vx *= 0.985;
+                    p.vy *= 0.975;
+                    p.radius = Math.min(p.maxRadius, p.radius + p.growth);
+
+                    var prog = p.life / p.maxLife;
+                    if (prog < 0.28) {
+                        p.alpha = (prog / 0.28) * p.targetAlpha;
+                    } else {
+                        p.alpha = (1 - (prog - 0.28) / 0.72) * p.targetAlpha;
+                    }
+
+                    if (p.alpha > 0.01) {
+                        var grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
+                        grad.addColorStop(0, 'rgba(' + tint.r + ',' + tint.g + ',' + tint.b + ',' + (p.alpha * 0.9).toFixed(3) + ')');
+                        grad.addColorStop(0.5, 'rgba(' + tint.r + ',' + tint.g + ',' + tint.b + ',' + (p.alpha * 0.6).toFixed(3) + ')');
+                        grad.addColorStop(1, 'rgba(' + tint.r + ',' + tint.g + ',' + tint.b + ',0)');
+                        ctx.fillStyle = grad;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+
+            if (alive > 0) {
+                requestAnimationFrame(animate);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        requestAnimationFrame(animate);
+    };
+})();
+</script>
+"""
+custom_aqi_script_html = custom_aqi_script_html.replace("__B64_GOOD__", avatar_good_b64) \
+                                               .replace("__B64_MODERATE__", avatar_moderate_b64) \
+                                               .replace("__B64_POOR__", avatar_poor_b64) \
+                                               .replace("__B64_VERY_POOR__", avatar_very_poor_b64) \
+                                               .replace("__B64_SEVERE__", avatar_severe_b64)
+st.html(custom_aqi_script_html)
 
 # -----------------------------------------------------------------------------
 # 4. Major Air Pollutants Section (2x3 Grid matching Image 1)
